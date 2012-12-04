@@ -18,8 +18,13 @@ public class StatusUpdater extends Thread {
           pingFailure.rewind();
           pingFailure.play();
         } else {
-          pingSuccess.rewind();
-          pingSuccess.play();
+          if(result.indexOf("IN") >= 0) {
+            pingIn.rewind();
+            pingIn.play();
+          } else {
+            pingOut.rewind();
+            pingOut.play();
+          }
         }
         println(result);
         pause = true;

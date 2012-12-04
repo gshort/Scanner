@@ -1,19 +1,23 @@
-import processing.video.*;
+//import processing.video.*;
+import codeanticode.gsvideo.*;
 import com.google.zxing.*;
 import java.awt.image.BufferedImage;
 import java.util.*;
 import ddf.minim.*;
+//import processing.serial.*;
+//import cc.arduino.*;
 
-Capture cam; //Set up the camera
+GSCapture cam; //Set up the camera
 com.google.zxing.Reader reader = new com.google.zxing.MultiFormatReader();
 HashMap statusUpdaters = new HashMap();
 Minim minim;
 AudioSnippet pingScanned;
-AudioSnippet pingSuccess;
+AudioSnippet pingIn;
+AudioSnippet pingOut;
 AudioSnippet pingFailure;
 
-int WIDTH = 1280;
-int HEIGHT = 720;
+int WIDTH = 640;
+int HEIGHT = 480;
 
 // Grabs the image file 
 
@@ -24,7 +28,7 @@ void setup() {
   textFont(metaBold, 48); 
   textAlign(CENTER, CENTER);
 
-  String[] cameras = Capture.list();
+/*  String[] cameras = Capture.list();
   
   if (cameras.length == 0) {
     println("There are no cameras available for capture.");
@@ -36,13 +40,14 @@ void setup() {
     }
     
     // The camera can be initialized directly using an 
-    // element from the array returned by list():
-    cam = new Capture(this, cameras[0]);
+    // element from the array returned by list():*/
+    cam = new GSCapture(this, WIDTH, HEIGHT, "0");
     cam.start();     
-  }
+//  }
   minim = new Minim(this);
   pingScanned = minim.loadSnippet("pingScanned.wav");
-  pingSuccess = minim.loadSnippet("pingSuccess.wav");
+  pingIn = minim.loadSnippet("pingIn.wav");
+  pingOut = minim.loadSnippet("pingOut.wav");
   pingFailure = minim.loadSnippet("pingFailure.wav");
 }
  
@@ -69,7 +74,7 @@ void draw() {
           fill(#ff0000);
           text(i, points[i].getX(), points[i].getY());
         }
-        String url = "http://eriemakerspace.com/ems_in_out.php?app=testApp&status=AUTO&code=" + URLEncode(result.getText());
+        String url = "http://eriemakerspace.com/ems_in_out.php?app=Door%20Scanner&status=AUTO&code=" + URLEncode(result.getText());
         StatusUpdater updater;
         if(!statusUpdaters.containsKey(result.getText())) {
           statusUpdaters.put(result.getText(), new StatusUpdater(url));
